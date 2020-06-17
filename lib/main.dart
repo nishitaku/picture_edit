@@ -47,6 +47,8 @@ class _MyHomePageState extends State<MyHomePage> {
               ? Container()
               : Image.file(
             _image,
+            color: Color(0xFF00FFFF),
+            colorBlendMode: BlendMode.colorBurn,
           ),
         ),
       ),

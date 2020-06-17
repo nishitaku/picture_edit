@@ -121,6 +121,11 @@ class _MyHomePageState extends State<MyHomePage> {
             child: Icon(Icons.attach_file),
           ),
           FloatingActionButton(
+            onPressed: (){getImage(ImageSource.camera);},
+            tooltip: "撮影",
+            child: Icon(Icons.camera),
+          ),
+          FloatingActionButton(
             onPressed: trimmingImage,
             tooltip: "トリミング",
             child: Icon(Icons.picture_in_picture),

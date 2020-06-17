@@ -6,6 +6,16 @@ import 'package:image_picker/image_picker.dart';
 
 void main() => runApp(MyApp());
 
+class BlendData {
+  BlendMode mode;
+  Color color;
+
+  BlendData(BlendMode mode, Color color) {
+    this.mode = mode;
+    this.color = color;
+  }
+}
+
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -29,7 +39,37 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  //BlendDataの作成
+  final Map blendDataMap = {
+    "Original": BlendData(
+      null,
+      null,
+    ),
+    "Strong": BlendData(
+      BlendMode.saturation,
+      Color(0xFF00FFFF),
+    ),
+    "Sepia": BlendData(
+      BlendMode.modulate,
+      Color(0xFFffdead),
+    ),
+    "Sunset": BlendData(
+      BlendMode.colorBurn,
+      Color(0xFFf0e68c),
+    ),
+    "MagicHour": BlendData(
+      BlendMode.colorBurn,
+      Color(0xFFba55d3),
+    ),
+    "Ocean": BlendData(
+      BlendMode.colorBurn,
+      Color(0xFF00FFFF),
+    ),
+  };
+
   File _image;
+  BlendMode _mode;
+  Color _color;
 
   @override
   Widget build(BuildContext context) {
@@ -47,9 +87,24 @@ class _MyHomePageState extends State<MyHomePage> {
               ? Container()
               : Image.file(
             _image,
-            color: Color(0xFF00FFFF),
-            colorBlendMode: BlendMode.colorBurn,
+            color: _color,
+            colorBlendMode: _mode,
           ),
+        ),
+      ),
+    );
+
+    //色調変更ボタン
+    widgets.add(
+      _image == null
+          ? Container(
+        height: 90,
+      )
+          : Container(
+        height: 90,
+        child: ListView(
+          scrollDirection: Axis.horizontal,
+          children: createChangeBlendButtons(),
         ),
       ),
     );
@@ -81,6 +136,50 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(
           () {
         _image = image;
+      },
+    );
+  }
+
+  List<Widget> createChangeBlendButtons() {
+    List<Widget> widgets = List<Widget>();
+
+    blendDataMap.forEach(
+          (key, value) {
+        widgets.add(
+          RaisedButton(
+            child: SizedBox(
+              height: 50,
+              width: 50,
+              child: FittedBox(
+                fit: BoxFit.fill,
+                child: value.mode == null
+                    ? Image.file(
+                  _image,
+                )
+                    : Image.file(
+                  _image,
+                  color: value.color,
+                  colorBlendMode: value.mode,
+                ),
+              ),
+            ),
+            color: Colors.white,
+            onPressed: () {
+              selectedBlend(key);
+            },
+          ),
+        );
+      },
+    );
+    return widgets;
+  }
+
+  void selectedBlend(String value) {
+    setState(
+          () {
+        BlendData blendData = blendDataMap[value];
+        _mode = blendData.mode;
+        _color = blendData.color;
       },
     );
   }

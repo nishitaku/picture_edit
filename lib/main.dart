@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 void main() => runApp(MyApp());
 
@@ -28,6 +29,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  File _image;
 
   @override
   Widget build(BuildContext context) {
@@ -40,23 +42,25 @@ class _MyHomePageState extends State<MyHomePage> {
         height: size.width,
         width: size.width,
         child: FittedBox(
-            fit: BoxFit.fitHeight,
-            child: Container()
+          fit: BoxFit.fitHeight,
+          child: _image == null
+              ? Container()
+              : Image.file(
+            _image,
+          ),
         ),
       ),
     );
 
+    //Utilityボタン
     widgets.add(
-      Text(widget.title),
-    );
-    widgets.add(
-      Text(widget.title),
-    );
-    widgets.add(
-      Text(widget.title),
-    );
-    widgets.add(
-      Text(widget.title+"a"),
+      FloatingActionButton(
+        onPressed: (){
+          getImage(ImageSource.gallery);
+        },
+        tooltip: "画像を変更する",
+        child: Icon(Icons.attach_file),
+      ),
     );
 
     return Scaffold(
@@ -66,6 +70,16 @@ class _MyHomePageState extends State<MyHomePage> {
       body: ListView(
         children: widgets,
       ),
+    );
+  }
+
+  Future getImage(ImageSource imageSource) async {
+    var image = await ImagePicker.pickImage(source: imageSource);
+
+    setState(
+          () {
+        _image = image;
+      },
     );
   }
 }
